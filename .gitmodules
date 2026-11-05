@@ -1,0 +1,6 @@
+[submodule "thirdparty/r2_gaussian"]
+	path = thirdparty/r2_gaussian
+	url = https://github.com/Ruyi-Zha/r2_gaussian.git
+[submodule "thirdparty/TIGRE"]
+	path = thirdparty/TIGRE
+	url = https://github.com/CERN/TIGRE.git
