@@ -10,31 +10,31 @@ Partition gaussians into clusters. Then for each cluster pick one representative
 
 Organizes gaussians hierarchically or around representative points, enabling efficient reuse of similar properties across regions.
 
-### Octree
+#### Octree
 
 Spatial partitioning of gaussians.
 
-### Anchor Based Representations
+#### Anchor Based Representations
 
 Anchors are initialized by voxelizing the 3D scene and are assigned position, context features, scaling, and learnable offsets to other gaussians. Similar to vector quantization, but here anchor points are stored.
 
-### Multi-Resolution Hash Grids
+#### Multi-Resolution Hash Grids
 
 Hierarchical set of hash maps starting from a coarse resolution to finer resolutions. The key to the hash map is a 3D voxel position, The values in the hash map are feature vectors. Each hash map gives a different value based on key. This ensures that a collision on one resolution does not produce an error since the chance that two different positions in all resolutions produce collisions is practically zero. A MLP is used to decode the final gaussian attributes from the concatenated feature vectors from all resolutions.
 
-### Z-order (Morton) Curve
+#### Z-order (Morton) Curve
 
 Creates a one dimensional index mapping multi-dimensional data into a linear sequence while preserving spatial locality.
 
-### Tri-planes and K-planes
+#### Tri-planes and K-planes
 
 Projects 3D positions onto three orthogonal 2D planes. This creates a natural 2D organization, where gaussians that are spatially close in 3D tend to occupy proximate coordinates on each plane, allowing 2D feature maps to be saved or edited like images while preserving some local neighborhood relationships. For 3DGS compression, the query can be the position of the primitive. The planes can store features, which are decoded into the other attributes (e.g. color, opacity) with a small MLP.
 
-### Self-Organizing Gaussians
+#### Self-Organizing Gaussians
 
 Projects high-dimensional data onto a lower-dimensional grid, preserving the topological relationships between data points through competitive learning. Each scene is optimized separately. Enables the use of standard image compression algorithms.
 
-### Region Adaptive Hierarchical Transform
+#### Region Adaptive Hierarchical Transform
 
 RAHT is a bottom-up transform that reorganizes color attributes along an octree.
 
@@ -44,14 +44,24 @@ Selective reduction of attributes associated with each gaussian, such as spheric
 
 ## 3DGS Compaction Techniques
 
-The key tool for achieving compaction in 3DGS is Adaptive Density Control (ADC). ADC adds or removes gaussians depending on their contribution to the scene, ensuring that only the most essential elements are retained. This ensures that additional gaussians are allocated where they are most needed, such as in high-frequency regions, while redundant or less impactful gaussians are pruned. ADC can be broadly categorized into two key approaches: 
+The key tool for achieving compaction in 3DGS is **Adaptive Density Control** (ADC). ADC adds or removes gaussians depending on their contribution to the scene, ensuring that only the most essential elements are retained. This ensures that additional gaussians are allocated where they are most needed, such as in high-frequency regions, while redundant or less impactful gaussians are pruned. ADC can be broadly categorized into two key approaches: 
 
 - **Densification**
 - **Pruning**
 
 ### Pruning
 
-Many methods compute a sensitivity score for each gaussian, which expresses how much will the quality of the rendered scene drop, when the given gaussian is pruned. Based on this score, algorithms remove gaussians with the lowest sensitivity in iterations. 
+This step is tightly coupled with ADC. The basic pruning methods implement pruning by using various simple heuristics when performing ADC. These heuristics can be based of gaussian gradients, opacity, size and so on.
+
+Many methods compute a sensitivity score for each gaussian, which expresses how much will the quality of the rendered scene drop, when the given gaussian is pruned. Based on this score, algorithms remove gaussians with the lowest sensitivity in iterations.
+
+#### Principle Uncertainty Pruning
+
+TODO
+
+#### Markov Chain Monte Carlo
+
+TODO
 
 ## R2 Gaussian Compression
 
@@ -113,7 +123,9 @@ Most available datasets can be categorized as:
 
 - PSNR (Peak Signal-to-Noise Ratio): X-ray projections
 - SSIM (Structural Similarity Index Measure): X-ray projections
-- RMSE/MSE (Root Mean Square Error): 3D volume
+- 3D PSNR (Peak Signal-to-Noise Ratio): 3D volume
+- 3D SSIM (Structural Similarity Index Measure): 3D volume
+- RMSE/MSE (Root Mean Square Error): 
 
 **Compression:**
 
@@ -123,6 +135,7 @@ Most available datasets can be categorized as:
 **Rendering (Novel View Synthesis):**
 
 - FPS
+- VRAM used
 
 ## Experiments
 
