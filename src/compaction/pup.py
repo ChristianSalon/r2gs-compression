@@ -13,14 +13,14 @@ class PUP:
         self.params = compaction_params
 
     def prune(self) -> None:
-        print(f"Stared compaction using PUP")
+        print(f"Started compaction using PUP")
 
         # Load training views (x-ray projections)
         train_cameras: list[Camera] = self.scene.getTrainCameras()
-        assert isinstance(train_cameras, list[Camera]), "Training cameras have wrong type"
+        assert isinstance(train_cameras, list), "Training cameras have wrong type"
         print(f"Loaded {len(train_cameras)} training views")
 
-        print(f"Stared computing hessian")
+        print(f"Started computing hessian")
         hessian = self.compute_hessian(cameras=train_cameras)
 
         # Compute sensitivity score
