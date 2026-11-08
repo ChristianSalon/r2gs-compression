@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 
-sys.path.append(os.path("../thirdparty/r2_gaussian"))
+sys.path.append(os.path.abspath("../thirdparty/r2_gaussian"))
 from r2_gaussian.arguments import ModelParams
 from r2_gaussian.dataset import Scene
 from r2_gaussian.gaussian import GaussianModel, initialize_gaussian
@@ -19,8 +19,8 @@ def main() -> None:
 
     # Parse training arguments
     args = parser.parse_args()
-    model_params.extract(args)
-    compaction_params.extract(args)
+    model_params = model_params.extract(args)
+    compaction_params = compaction_params.extract(args)
 
     print(f"Started initializing R2GS scene")
 
