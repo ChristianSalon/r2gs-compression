@@ -3,7 +3,7 @@ import os
 import sys
 
 sys.path.append(os.path.abspath("../thirdparty/r2_gaussian"))
-from r2_gaussian.arguments import ModelParams
+from r2_gaussian.arguments import ModelParams, PipelineParams, OptimizationParams
 from r2_gaussian.dataset import Scene
 from r2_gaussian.gaussian import GaussianModel, initialize_gaussian
 
@@ -15,6 +15,8 @@ def main() -> None:
     # Define training arguments
     parser = argparse.ArgumentParser(description="R2GS compaction and compression training script")
     model_params = ModelParams(parser)
+    pipeline_params = PipelineParams(parser)
+    optimization_params = OptimizationParams(parser)
     compaction_params = CompactionParams(parser)
 
     # Parse training arguments
@@ -36,7 +38,12 @@ def main() -> None:
     # Select compaction and compression methods
     if compaction_params.compaction_method == CompactionMethod.PUP.value:
         # Perform compaction
-        PUP(scene=scene, compaction_params=compaction_params).prune()
+        PUP(
+            scene=scene,
+            pipeline_params=pipeline_params,
+            optimization_params=optimization_params,
+            compaction_params=compaction_params,
+        ).prune()
 
     print(f"Done compressing scene")
 

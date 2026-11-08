@@ -1,5 +1,5 @@
 import torch
-from r2_gaussian.arguments import PipelineParams
+from r2_gaussian.arguments import PipelineParams, OptimizationParams
 from r2_gaussian.dataset import Scene
 from r2_gaussian.dataset.cameras import Camera
 from r2_gaussian.gaussian import render
@@ -8,9 +8,17 @@ from compaction.arguments import CompactionParams
 
 
 class PUP:
-    def __init__(self, scene: Scene, compaction_params: CompactionParams):
+    def __init__(
+        self,
+        scene: Scene,
+        pipeline_params: PipelineParams,
+        optimization_params: OptimizationParams,
+        compaction_params: CompactionParams,
+    ):
         self.scene = scene
-        self.params = compaction_params
+        self.pipeline_params = pipeline_params
+        self.optimization_params = optimization_params
+        self.compaction_params = compaction_params
 
     def prune(self) -> None:
         print(f"Started compaction using PUP")
@@ -51,7 +59,7 @@ class PUP:
             scale.requires_grad_(True)
 
             # Render x-ray projection using R2 gaussian
-            rendered_result = render(camera, self.scene.gaussians, PipelineParams())
+            rendered_result = render(camera, self.scene.gaussians, self.pipeline_params)
             rendered_projection = rendered_result["render"]
 
             # Compute L2 loss
@@ -71,7 +79,7 @@ class PUP:
     def compute_prune_mask(self, sensitivity_score: torch.Tensor) -> None:
         num_gaussians = sensitivity_score.shape[0]
 
-        keep_count = int((1.0 - self.params.prune_ratio) * num_gaussians)
+        keep_count = int((1.0 - self.compaction_params.prune_ratio) * num_gaussians)
         _, keep_indices = torch.topk(sensitivity_score, keep_count, largest=True)
 
         prune_mask = torch.ones(num_gaussians, dtype=torch.bool, device="cuda")
