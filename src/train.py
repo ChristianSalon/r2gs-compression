@@ -34,7 +34,7 @@ def main() -> None:
     print(f"Started compressing scene")
 
     # Select compaction and compression methods
-    if compaction_params.compaction_method == CompactionMethod.PUP:
+    if compaction_params.compaction_method == CompactionMethod.PUP.value:
         # Perform compaction
         PUP(scene=scene, compaction_params=compaction_params).prune()
 

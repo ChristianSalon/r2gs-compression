@@ -1,16 +1,16 @@
 from argparse import ArgumentParser
-from enum import StrEnum
+from enum import Enum
 
 from r2_gaussian.utils.argument_utils import ParamGroup
 
 
-class CompactionMethod(StrEnum):
+class CompactionMethod(Enum):
     PUP = "pup"
 
 
 class CompactionParams(ParamGroup):
     def __init__(self, parser: ArgumentParser, fill_none: bool = False):
-        self.compaction_method = CompactionMethod.PUP
+        self.compaction_method = CompactionMethod.PUP.value
         self.prune_ratio = 0.9
 
         super().__init__(parser, "Compaction parameters", fill_none)
