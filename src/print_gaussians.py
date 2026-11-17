@@ -17,7 +17,7 @@ def main() -> None:
         gaussians = pickle.load(file)
 
     # Print compression and compaction metrics
-    print(f"Number of Gaussians: {len(gaussians["density"])}")
+    print(f"Number of Gaussians: {len(gaussians['density'])}")
     print(f"Input File Size: {input_path.stat().st_size} B")
 
     # Print gaussians dict
