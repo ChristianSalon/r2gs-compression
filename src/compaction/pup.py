@@ -49,6 +49,8 @@ class PUP:
         fisher_blocks = torch.zeros((num_gaussians, 6, 6), device="cuda")
 
         for camera in cameras:
+            torch.cuda.empty_cache()
+
             # Ground truth x-ray projection for this camera pose
             gt_projection = camera.original_image.to("cuda").float()
 
@@ -62,8 +64,16 @@ class PUP:
             rendered_result = render(camera, self.scene.gaussians, self.pipeline_params)
             rendered_projection = rendered_result["render"]
 
+            # Downsample projections 16x (creates 4x4 patches)
+            gt_downsampled = torch.nn.functional.interpolate(
+                gt_projection.unsqueeze(0), scale_factor=0.0625, mode="bilinear", align_corners=False
+            ).squeeze(0)
+            rendered_downsampled = torch.nn.functional.interpolate(
+                rendered_projection.unsqueeze(0), scale_factor=0.0625, mode="bilinear", align_corners=False
+            ).squeeze(0)
+
             # Compute L2 loss
-            loss = torch.nn.functional.mse_loss(rendered_projection, gt_projection)
+            loss = torch.nn.functional.mse_loss(rendered_downsampled, gt_downsampled)
             loss.backward()
 
             # Accumulate 6D spatial gradients
@@ -71,8 +81,10 @@ class PUP:
             # [N, 6, 6] = [N, 6, 1] * [N, 1, 6]
             fisher_blocks += torch.bmm(grad_6d.unsqueeze(-1), grad_6d.unsqueeze(1))
 
-            xyz.grad.zero_()
-            scale.grad.zero_()
+            # Free up memory
+            xyz.grad = None
+            scale.grad = None
+            del rendered_result, rendered_projection, gt_projection, gt_downsampled, rendered_downsampled, loss, grad_6d
 
         return fisher_blocks
 
