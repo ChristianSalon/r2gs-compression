@@ -116,7 +116,7 @@ class PUP:
         keep_count = int((1.0 - self.compaction_params.prune_ratios[iteration]) * num_gaussians)
         _, keep_indices = torch.topk(sensitivity_score, keep_count, largest=True)
 
-        prune_mask = torch.ones(num_gaussians, dtype=torch.bool, device="cuda")
+        prune_mask = torch.ones(num_gaussians, dtype=torch.bool, device="cpu")
         prune_mask[keep_indices] = False
 
         return prune_mask
@@ -196,12 +196,12 @@ class PUP:
                 self.scene.gaussians.optimizer.step()
                 self.scene.gaussians.optimizer.zero_grad(set_to_none=True)
 
-        if (refine_iteration + 1) % self.REFINEMENT_LOG_INTERVAL == 0:
-            print(
-                f"Refinement round {iteration + 1}: "
-                f"iteration {refine_iteration + 1}/"
-                f"{self.REFINEMENT_ITERATIONS}, "
-                f"loss={loss.item():.6f}"
-            )
+            if (refine_iteration + 1) % self.REFINEMENT_LOG_INTERVAL == 0:
+                print(
+                    f"Refinement round {iteration + 1}: "
+                    f"iteration {refine_iteration + 1}/"
+                    f"{self.REFINEMENT_ITERATIONS}, "
+                    f"loss={loss['total'].item():.6f}"
+                )
 
         print(f"Done performing refinement of gaussians")
