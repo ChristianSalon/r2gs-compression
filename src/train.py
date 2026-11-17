@@ -34,6 +34,7 @@ def main() -> None:
     # Load the maximum iteration of trained scene
     loaded_iteration = initialize_gaussian(gaussians, model_params, loaded_iter=-1)
     scene.gaussians = gaussians
+    scene.gaussians.training_setup(optimization_params)
 
     print(f"Started compressing scene")
 
@@ -42,10 +43,11 @@ def main() -> None:
         # Perform compaction
         PUP(
             scene=scene,
+            model_params=model_params,
             pipeline_params=pipeline_params,
             optimization_params=optimization_params,
             compaction_params=compaction_params,
-        ).prune()
+        ).run()
 
     print(f"Done compressing scene")
 
