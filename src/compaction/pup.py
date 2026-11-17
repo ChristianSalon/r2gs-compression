@@ -61,6 +61,10 @@ class PUP:
         stabilized_hessian = hessian + damping
         _, log_det = torch.slogdet(stabilized_hessian)
 
+        # Initialize max_radii2D to prevent shape mismatch
+        if self.scene.gaussians.max_radii2D.numel() == 0:
+            self.scene.gaussians.max_radii2D = torch.zeros((self.scene.gaussians.get_xyz.shape[0]), device="cuda")
+
         # Prune gaussians in place
         print(f"Started pruning gaussians")
         prune_mask = self.compute_prune_mask(sensitivity_score=log_det, iteration=iteration)
