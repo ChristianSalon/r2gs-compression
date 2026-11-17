@@ -22,6 +22,8 @@ def main() -> None:
     # Parse training arguments
     args = parser.parse_args()
     model_params = model_params.extract(args)
+    pipeline_params = pipeline_params.extract(args)
+    optimization_params = optimization_params.extract(args)
     compaction_params = compaction_params.extract(args)
 
     print(f"Started initializing R2GS scene")
