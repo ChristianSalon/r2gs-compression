@@ -42,6 +42,9 @@ def main() -> None:
     gaussians = GaussianModel(scale_bound=scale_bound)
     # Load the maximum iteration of trained scene
     loaded_iteration = initialize_gaussian(gaussians, model_params, loaded_iter=-1)
+    # Restore the spatial learning-rate scale
+    # TODO: Load checkpoint and call restore() or leave as is
+    gaussians.spatial_lr_scale = 1.0
     scene.gaussians = gaussians
     scene.gaussians.training_setup(optimization_params)
 
