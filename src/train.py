@@ -2,10 +2,13 @@ import argparse
 import os
 import sys
 
+import numpy as np
+
 sys.path.append(os.path.abspath("../thirdparty/r2_gaussian"))
-from r2_gaussian.arguments import ModelParams, PipelineParams, OptimizationParams
+from r2_gaussian.arguments import ModelParams, OptimizationParams, PipelineParams
 from r2_gaussian.dataset import Scene
-from r2_gaussian.gaussian import GaussianModel, initialize_gaussian
+from r2_gaussian.gaussian import GaussianModel, initialize_gaussian, query
+from r2_gaussian.utils.general_utils import t2a
 
 from compaction.arguments import CompactionMethod, CompactionParams
 from compaction.pup import PUP
@@ -51,14 +54,27 @@ def main() -> None:
 
     print(f"Done compressing scene")
 
-    # Save compressed scene
-    output_path = os.path.join(
+    # Write compressed scene
+    output_dir = os.path.join(
         model_params.model_path,
         "point_cloud",
         "iteration_" + str(loaded_iteration),
-        "point_cloud_compressed.pickle",
     )
-    scene.gaussians.save_ply(output_path)
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Save compressed gaussians
+    gaussians_path = os.path.join(output_dir, "point_cloud_compressed.pickle")
+    scene.gaussians.save_ply(gaussians_path)
+
+    # Save compressed volume
+    compressed_volume = query(
+        scene.gaussians,
+        scene.scanner_cfg["offOrigin"],
+        scene.scanner_cfg["nVoxel"],
+        scene.scanner_cfg["sVoxel"],
+        pipeline_params,
+    )["vol"]
+    np.save(os.path.join(output_dir, "vol_pred_compressed.npy"), t2a(compressed_volume))
 
 
 if __name__ == "__main__":
