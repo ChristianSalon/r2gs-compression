@@ -33,7 +33,13 @@ def main() -> None:
 
     # Initialize scene with r2 gaussian
     scene = Scene(args=model_params, shuffle=False)
-    gaussians = GaussianModel()
+
+    volume_to_world = max(scene.scanner_cfg["sVoxel"])
+    scale_bound = None
+    if model_params.scale_min > 0 and model_params.scale_max > 0:
+        scale_bound = np.array([model_params.scale_min, model_params.scale_max]) * volume_to_world
+
+    gaussians = GaussianModel(scale_bound=scale_bound)
     # Load the maximum iteration of trained scene
     loaded_iteration = initialize_gaussian(gaussians, model_params, loaded_iter=-1)
     scene.gaussians = gaussians
