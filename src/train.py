@@ -63,7 +63,7 @@ def main() -> None:
     os.makedirs(output_dir, exist_ok=True)
 
     # Save compressed gaussians
-    gaussians_path = os.path.join(output_dir, "point_cloud_compressed.pickle")
+    gaussians_path = os.path.join(output_dir, compaction_params.scene_file_name)
     scene.gaussians.save_ply(gaussians_path)
 
     # Save compressed volume
@@ -74,7 +74,7 @@ def main() -> None:
         scene.scanner_cfg["sVoxel"],
         pipeline_params,
     )["vol"]
-    np.save(os.path.join(output_dir, "vol_pred_compressed.npy"), t2a(compressed_volume))
+    np.save(os.path.join(output_dir, compaction_params.volume_file_name), t2a(compressed_volume))
 
 
 if __name__ == "__main__":
