@@ -54,12 +54,6 @@ class PUP:
             # Ground truth x-ray projection for this camera pose
             gt_projection = camera.original_image.to("cuda").float()
 
-            # Track gradients for spatial mean and scale
-            xyz = self.scene.gaussians.get_xyz
-            scale = self.scene.gaussians.get_scaling
-            xyz.requires_grad_(True)
-            scale.requires_grad_(True)
-
             # Render x-ray projection using R2 gaussian
             rendered_result = render(camera, self.scene.gaussians, self.pipeline_params)
             rendered_projection = rendered_result["render"]
@@ -77,13 +71,13 @@ class PUP:
             loss.backward()
 
             # Accumulate 6D spatial gradients
-            grad_6d = torch.cat([xyz.grad, scale.grad], dim=-1)
+            grad_6d = torch.cat([self.scene.gaussians._xyz.grad, self.scene.gaussians._scaling.grad], dim=-1)
             # [N, 6, 6] = [N, 6, 1] * [N, 1, 6]
             fisher_blocks += torch.bmm(grad_6d.unsqueeze(-1), grad_6d.unsqueeze(1))
 
             # Free up memory
-            xyz.grad = None
-            scale.grad = None
+            self.scene.gaussians._xyz.grad = None
+            self.scene.gaussians._scaling.grad = None
             del rendered_result, rendered_projection, gt_projection, gt_downsampled, rendered_downsampled, loss, grad_6d
 
         return fisher_blocks
