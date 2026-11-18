@@ -4,7 +4,7 @@ import sys
 
 import numpy as np
 
-sys.path.append(os.path.abspath("../thirdparty/r2_gaussian"))
+sys.path.append(os.path.abspath("thirdparty/r2_gaussian"))
 from r2_gaussian.arguments import ModelParams, OptimizationParams, PipelineParams
 from r2_gaussian.dataset import Scene
 from r2_gaussian.gaussian import GaussianModel, initialize_gaussian, query
