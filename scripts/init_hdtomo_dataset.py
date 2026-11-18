@@ -49,11 +49,10 @@ def run_initialize_pcd(data_dir: str) -> None:
     cmd = [sys.executable, script_path, "--data", data_dir]
 
     try:
-        result = subprocess.run(cmd, check=True, text=True)
-        print("Point cloud initialization completed successfully.")
+        subprocess.run(cmd, check=True, text=True)
+        print(f"Point cloud initialization completed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error: initialize_pcd.py failed with exit code {e.returncode}")
-        raise
 
 
 def main() -> None:
