@@ -73,7 +73,6 @@ def main() -> None:
     projections = xrmreader.divide_by_reference(projections, metadata["reference"])
     projections = xrmreader.revert_shifts(projections, metadata["x-shifts"], metadata["y-shifts"])
     projections = xrmreader.negative_logarithm(projections)
-    projections = xrmreader.truncation_correction(projections)
     print(f"Projections shape: {projections.shape}")
 
     # Read the 3D reconstructed volume (Z, Y, X)
