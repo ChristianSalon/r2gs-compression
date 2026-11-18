@@ -4,6 +4,10 @@ torch==2.6.0+cu126
 torchvision==0.21.0+cu126
 numpy
 scikit-image
+xrmreader
 
 -r thirdparty/r2_gaussian/requirements.txt
 -r thirdparty/TIGRE/Python/requirements.txt
+-r thirdparty/dxchange/envs/requirements.txt
+
+thirdparty/dxchange
