@@ -72,7 +72,6 @@ def main() -> None:
     projections = xrmreader.read_txrm(args.projections)
     projections = xrmreader.divide_by_reference(projections, metadata["reference"])
     projections = xrmreader.revert_shifts(projections, metadata["x-shifts"], metadata["y-shifts"])
-    projections = xrmreader.downsample(projections, spatial_factor=2, angular_factor=1)
     projections = xrmreader.negative_logarithm(projections)
     projections = xrmreader.truncation_correction(projections)
     print(f"Projections shape: {projections.shape}")
