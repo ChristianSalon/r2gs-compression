@@ -4,3 +4,6 @@
 [submodule "thirdparty/TIGRE"]
 	path = thirdparty/TIGRE
 	url = https://github.com/CERN/TIGRE.git
+[submodule "thirdparty/dxchange"]
+	path = thirdparty/dxchange
+	url = https://github.com/ChristianSalon/dxchange.git
