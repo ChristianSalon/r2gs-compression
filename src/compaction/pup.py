@@ -40,7 +40,7 @@ class PUP:
             if self.compaction_params.refine:
                 self.refine(iteration=iteration)
 
-            print(f"Done with {iteration} iteration of PUP pipeline")
+            print(f"Done with iteration {iteration + 1} of PUP pipeline")
 
         print(f"Done running PUP pipeline")
 
